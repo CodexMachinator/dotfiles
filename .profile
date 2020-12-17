@@ -16,6 +16,18 @@ if [ -n "$BASH_VERSION" ]; then
     fi
 fi
 
+
+# Set environment variables
+
+export EDITOR=nano
+#GNU (Ubuntu)
+if ls --color -d . >/dev/null 2>&1; then
+    export VISUAL=gedit
+#BSD (macOSX)
+elif ls -G -d . >/dev/null 2>&1; then
+    export VISUAL=textedit
+fi
+
 # set PATH so it includes user's private bin if it exists
 if [ -d "$HOME/bin" ] ; then
     PATH="$HOME/bin:$PATH"
@@ -25,3 +37,13 @@ fi
 if [ -d "$HOME/.local/bin" ] ; then
     PATH="$HOME/.local/bin:$PATH"
 fi
+
+# enable programmable completion features
+#if [ -f /opt/local/etc/profile.d/bash_completion.sh ] && ! shopt -oq posix; then
+#    . /opt/local/etc/profile.d/bash_completion.sh
+#fi
+
+# enable git completion
+#if [ -f /usr/share/git-core/git-completion.bash ]; then
+#    . /usr/share/git-core/git-completion.bash
+#fi
