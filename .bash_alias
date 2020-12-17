@@ -52,6 +52,10 @@ elif ls -G -d . >/dev/null 2>&1; then
     export CLICOLOR=1
     export LSCOLORS=GxFxCxDxBxegedabagaced
 
+        alias grep='grep --color=auto'
+        alias fgrep='fgrep --color=auto'
+        alias egrep='egrep --color=auto'  
+
         # inludues all file types. short list 
         alias ls='ls -1'                                                           # list non hidden only
         alias lh='find . -maxdepth 1 ! -path . -iname ".*" -execdir ls -1d {} +'   # list hidden only
