@@ -37,13 +37,3 @@ fi
 if [ -d "$HOME/.local/bin" ] ; then
     PATH="$HOME/.local/bin:$PATH"
 fi
-
-# enable programmable completion features
-#if [ -f /opt/local/etc/profile.d/bash_completion.sh ] && ! shopt -oq posix; then
-#    . /opt/local/etc/profile.d/bash_completion.sh
-#fi
-
-# enable git completion
-#if [ -f /usr/share/git-core/git-completion.bash ]; then
-#    . /usr/share/git-core/git-completion.bash
-#fi
