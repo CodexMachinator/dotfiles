@@ -29,6 +29,15 @@ case "$TERM" in
     xterm-color|*-256color) color_prompt=yes;;
 esac
 
+# If this is an xterm set the title to user@host:dir
+case "$TERM" in
+xterm*|rxvt*)
+    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+    ;;
+*)
+    ;;
+esac
+
 # uncomment for a colored prompt, if the terminal has the capability; turned
 # off by default to not distract the user: the focus in a terminal window
 # should be on the output of commands, not on the prompt
@@ -52,35 +61,29 @@ else
 fi
 unset color_prompt force_color_prompt
 
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in
-xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-    ;;
-*)
-    ;;
-esac
-
-# enable programmable completion features (you don't need to enable
-# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-# sources /etc/bash.bashrc).
+# Git Prompt
 if ! shopt -oq posix; then
-  if [ -f /usr/share/bash-completion/bash_completion ]; then
-    . /usr/share/bash-completion/bash_completion
-  elif [ -f /etc/bash_completion ]; then
+    
+  GIT_PS1_SHOWDIRTYSTATE=1
+  GIT_PS1_SHOWSTASHSTATE=1
+  GIT_PS1_SHOWUNTRACKEDFILES=1
+  GIT_PS1_SHOWCOLORHINTS=1
+  GIT_PS1_DESCRIBE_STYLE="branch"
+  GIT_PS1_SHOWUPSTREAM="auto git"    
+
+  # Ubuntu 20.04 locations
+  if [ -f /etc/bash_completion ]; then
+    PS1="${debian_chroot:+($debian_chroot)}$DGREEN\u@\h$RESET:$C_BLUE\w$BIYELLOW "'$(__git_ps1 "(%s) ")'"${RESET}$ "
     . /etc/bash_completion
+  elif [ -f /usr/share/bash-completion/bash_completion ]; then
+    PS1="${debian_chroot:+($debian_chroot)}$DGREEN\u@\h$RESET:$C_BLUE\w$BIYELLOW "'$(__git_ps1 "(%s) ")'"${RESET}$ "
+    . /usr/share/bash-completion/bash_completion
+    
+  # User installed locations on macOSX  
   elif [ -f $(brew --prefix)/etc/bash_completion ]; then
+    PS1="${debian_chroot:+($debian_chroot)}$DGREEN\u@\h$RESET:$C_BLUE\w$BIYELLOW "'$(__git_ps1 "(%s) ")'"${RESET}$ "
     . $(brew --prefix)/etc/bash_completion
     . $(brew --prefix)/etc/bash_completion.d/git-prompt.sh
-
-    GIT_PS1_SHOWDIRTYSTATE=1
-    GIT_PS1_SHOWSTASHSTATE=1
-    GIT_PS1_SHOWUNTRACKEDFILES=1
-    GIT_PS1_SHOWCOLORHINTS=1
-    GIT_PS1_DESCRIBE_STYLE="branch"
-    GIT_PS1_SHOWUPSTREAM="auto git"
-
-    PS1="${debian_chroot:+($debian_chroot)}$DGREEN\u@\h$RESET:$C_BLUE\w$BIYELLOW "'$(__git_ps1 "(%s) ")'"${RESET}$ "
   fi
 fi
 
