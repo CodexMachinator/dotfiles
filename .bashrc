@@ -109,28 +109,57 @@ shopt -s cdspell
 #   HISTORY OPTIONS
 #   ---------------------------
 
-# don't put duplicate lines or lines starting with space in the history.
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=100000
+HISTFILESIZE=$HISTSIZE
+
+# don't put duplicate lines in the history.
+# See bash(1) for more options
+#HISTCONTROL=ignoredups
+
+# don't put lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignorespace
 
-# append to the history file, don't overwrite it
-shopt -s histappend
-
-#Store multi-line commands in one history entry:
-shopt -s cmdhist
-
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=5000
-HISTFILESIZE=150000
+# don’t save ls, ps and history commands:
+export HISTIGNORE="ls:lh:la:lf:ld:lsym:lls:llh:lla:llf:lld:llsym:ps:history"
 
 # set to print the time stamps associated with each history entry 
 export HISTTIMEFORMAT="%h %d %H:%M:%S "
 
-# save each command to history right after it has been executed
-PROMPT_COMMAND='history -a'
+# append to the history file, don't overwrite it
+shopt -s histappend
 
-# don’t save ls, ps and history commands:
-export HISTIGNORE="ls:lh:la:lf:ld:lsym:lls:llh:lla:llf:lld:llsym:ps:history"
+## reedit a history substitution line if it failed
+shopt -s histreedit
+
+## edit a recalled history line before executing
+shopt -s histverify
+
+#Store multi-line commands in one history entry:
+shopt -s cmdhist
+
+# https://unix.stackexchange.com/questions/1288/preserve-bash-history-in-multiple-terminal-windows
+# known bugs:
+#  1. CTRL+C commands are appended to history
+#  2. history piped to other commands are listed twice in history
+
+
+# After each command, append to the history file and reread it from all bash sessions
+_bash_history_sync() {
+    builtin history -a         #1
+    HISTFILESIZE=$HISTSIZE     #2
+    builtin history -c         #3
+    builtin history -r         #4
+}
+
+history() {                  #5
+    _bash_history_sync
+    builtin history "$@"
+}
+
+PROMPT_COMMAND=_bash_history_sync
+
 
 #   ---------------------------
 #   ALIAS OPTIONS
