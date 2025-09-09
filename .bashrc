@@ -71,20 +71,39 @@ if ! shopt -oq posix; then
   GIT_PS1_DESCRIBE_STYLE="branch"
   GIT_PS1_SHOWUPSTREAM="auto git"    
 
-  # Ubuntu 20.04 locations
-  if [ -f /etc/bash_completion ]; then
-    PS1="${debian_chroot:+($debian_chroot)}$DGREEN\u@\h$RESET:$C_BLUE\w$BIYELLOW "'$(__git_ps1 "(%s) ")'"${RESET}$ "
-    . /etc/bash_completion
-  elif [ -f /usr/share/bash-completion/bash_completion ]; then
-    PS1="${debian_chroot:+($debian_chroot)}$DGREEN\u@\h$RESET:$C_BLUE\w$BIYELLOW "'$(__git_ps1 "(%s) ")'"${RESET}$ "
-    . /usr/share/bash-completion/bash_completion
-    
-  # User installed locations on macOSX  
-  elif [ -f $(brew --prefix)/etc/bash_completion ]; then
-    PS1="${debian_chroot:+($debian_chroot)}$DGREEN\u@\h$RESET:$C_BLUE\w$BIYELLOW "'$(__git_ps1 "(%s) ")'"${RESET}$ "
-    . $(brew --prefix)/etc/bash_completion
-    . $(brew --prefix)/etc/bash_completion.d/git-prompt.sh
-  fi
+  	# Ubuntu 20.04 locations
+	if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+	  if [ -f /etc/bash_completion ]; then
+		PS1="${debian_chroot:+($debian_chroot)}$DGREEN\u@\h$RESET:$C_BLUE\w$BIYELLOW "'$(__git_ps1 "(%s) ")'"${RESET}$ "
+		. /etc/bash_completion
+	  elif [ -f /usr/share/bash-completion/bash_completion ]; then
+		PS1="${debian_chroot:+($debian_chroot)}$DGREEN\u@\h$RESET:$C_BLUE\w$BIYELLOW "'$(__git_ps1 "(%s) ")'"${RESET}$ "
+		. /usr/share/bash-completion/bash_completion
+	  fi
+
+	# Amazon Linux
+	if [[ $(lsb_release -si) == "Amazon"* ]]; then
+	  if [ -f /etc/bash_completion ]; then
+		PS1="${debian_chroot:+($debian_chroot)}$DGREEN\u@\h$RESET:$C_BLUE\w$BIYELLOW "'$(__git_ps1 "(%s) ")'"${RESET}$ "
+		. /etc/bash_completion
+	  elif [ -f /usr/share/bash-completion/bash_completion ]; then
+		PS1="${debian_chroot:+($debian_chroot)}$DGREEN\u@\h$RESET:$C_BLUE\w$BIYELLOW "'$(__git_ps1 "(%s) ")'"${RESET}$ "
+		. /usr/share/bash-completion/bash_completion
+		if [ -f /usr/share/git-core/contrib/completion/git-prompt.sh ]; then
+		  PS1="${debian_chroot:+($debian_chroot)}$DGREEN\u@\h$RESET:$C_BLUE\w$BIYELLOW "'$(__git_ps1 "(%s) ")'"${RESET}$ "
+		  . /usr/share/git-core/contrib/completion/git-prompt.sh
+		fi
+	  fi
+	fi
+
+	# User installed locations on macOSX
+	elif [[ "$OSTYPE" == "darwin"* ]]; then
+	  if [ -f $(brew --prefix)/etc/bash_completion ]; then
+		PS1="${debian_chroot:+($debian_chroot)}$DGREEN\u@\h$RESET:$C_BLUE\w$BIYELLOW "'$(__git_ps1 "(%s) ")'"${RESET}$ "
+		. $(brew --prefix)/etc/bash_completion
+		. $(brew --prefix)/etc/bash_completion.d/git-prompt.sh
+	  fi
+	fi
 fi
 
 # check the window size after each command and, if necessary,
@@ -160,6 +179,21 @@ history() {                  #5
 
 PROMPT_COMMAND=_bash_history_sync
 
+# Set Editors
+export EDITOR=nano
+
+#GNU (Ubuntu)
+if ls --color -d . >/dev/null 2>&1; then
+    export VISUAL=gedit
+#BSD (macOSX)
+elif ls -G -d . >/dev/null 2>&1; then
+    export VISUAL=textedit
+fi
+
+# Load Paths
+if [ -f ~/.bash_paths ]; then
+    . ~/.bash_paths
+fi
 
 #   ---------------------------
 #   ALIAS OPTIONS
@@ -173,3 +207,5 @@ PROMPT_COMMAND=_bash_history_sync
 if [ -f ~/.bash_alias ]; then
     . ~/.bash_alias
 fi
+
+

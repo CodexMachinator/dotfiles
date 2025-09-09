@@ -8,6 +8,23 @@
 # for ssh logins, install and configure the libpam-umask package.
 #umask 022
 
+JAVA_HOME=/usr/lib/jvm/java
+
+# set Node and NPM path
+#if [ -d "/usr/lib64/node/nodejs/bin/" ] ; then
+#    PATH="/usr/lib64/node/nodejs/bin/:$PATH"
+#fi
+
+# set PATH so it includes user's private bin if it exists
+#if [ -d "$HOME/bin" ] ; then
+#    PATH="$HOME/bin:$PATH"
+#fi
+
+# set PATH so it includes user's private bin if it exists
+#if [ -d "$HOME/.local/bin" ] ; then
+#    PATH="$HOME/.local/bin:$PATH"
+#fi
+
 # if running bash
 if [ -n "$BASH_VERSION" ]; then
     # include .bashrc if it exists
@@ -16,24 +33,5 @@ if [ -n "$BASH_VERSION" ]; then
     fi
 fi
 
-
-# Set environment variables
-
-export EDITOR=nano
-#GNU (Ubuntu)
-if ls --color -d . >/dev/null 2>&1; then
-    export VISUAL=gedit
-#BSD (macOSX)
-elif ls -G -d . >/dev/null 2>&1; then
-    export VISUAL=textedit
-fi
-
-# set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/bin" ] ; then
-    PATH="$HOME/bin:$PATH"
-fi
-
-# set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/.local/bin" ] ; then
-    PATH="$HOME/.local/bin:$PATH"
-fi
+export PATH
+export JAVA_HOME
